@@ -7,7 +7,7 @@
 /**
  * @brief Ініціалізація АЦП на GPIO 4
  */
-void ADC_init(void);
+void ADC_init(QueueHandle_t xQueue);
 
 /**
  * @brief Задача FreeRTOS для зчитування сирих даних з LDR
