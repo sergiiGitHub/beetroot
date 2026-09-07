@@ -1,20 +1,34 @@
+/*
+ * Author: Oleksii Leznovskyi
+ */
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/gpio.h"
+#include "esp_log.h"
+#include "adc.h"
 
-#include "led.h"
+static const char *TAG = "MAIN";
+
+static TaskHandle_t adcTaskHandle = NULL;
 
 void app_main(void)
 {
-    // Ініціалізуємо світлодіод на GPIO 46
-    led_init(DEFAULT_LED_PIN);
+    // Ініціалізуємо АЦП
+    ADC_init();
 
-    while (1) {
-        //led_toggle(DEFAULT_LED_PIN);
-        led_on(DEFAULT_LED_PIN);
-        vTaskDelay(pdMS_TO_TICKS(10)); // Затримка 1 секунда
+    // Запускаємо таску для зчитування сирих даних
+    BaseType_t res = xTaskCreate(
+        ADC_task, 
+        "ADC_Task", 
+        4096, 
+        NULL, 
+        5, 
+        &adcTaskHandle
+    );
 
-        led_off(DEFAULT_LED_PIN);
-        vTaskDelay(pdMS_TO_TICKS(20)); 
+    if (res != pdPASS) {
+        ESP_LOGE(TAG, "Failed to create ADC_Task!");
+    } else {
+        ESP_LOGI(TAG, "ADC_Task started successfully!");
     }
 }
