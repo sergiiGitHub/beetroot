@@ -10,7 +10,7 @@ void app_main() {
     while (true)
     {
         load_buzzer_chirp(100);
-        vTaskDelay(1000);
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 
 
